@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 // ** MIDDLEWARE ** //
-const whitelist = ['http://localhost:3000/', 'http://localhost:8080/', 'https://public-diary.herokuapp.com', 'http://publicdiary.website']
+const whitelist = ['http://localhost:3000/', 'http://localhost:8000/', 'https://public-diary.herokuapp.com', 'http://publicdiary.website']
 const corsOptions = {
   origin: function (origin, callback) {
     console.log("** Origin of request " + origin)
@@ -45,5 +45,5 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8000
 app.listen(PORT, (req, res) => { console.log(`server listening on port: ${PORT}`) });

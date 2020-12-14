@@ -4,6 +4,8 @@ import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 
+import TestBE from './TestBE';
+
 function App() {
   const [notes, setNotes] = useState([]);
 
@@ -24,6 +26,7 @@ function App() {
   return (
     <div>
       <Header />
+      <TestBE />
       <CreateArea onAdd={addNote} />
       {notes.map((noteItem, index) => {
         return (
