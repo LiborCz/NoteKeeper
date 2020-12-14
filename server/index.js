@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 // ** MIDDLEWARE ** //
-const whitelist = ['http://localhost:3000/', 'http://localhost:8000/', 'https://public-diary.herokuapp.com', 'http://publicdiary.website']
+const whitelist = ['http://localhost:3000/', 'http://localhost:8000/', 'https://note-keeper-cz.herokuapp.com/']
 const corsOptions = {
   origin: function (origin, callback) {
     console.log("** Origin of request " + origin)
