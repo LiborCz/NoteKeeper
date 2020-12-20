@@ -1,14 +1,18 @@
-const express = require('express');
 const bodyParser = require('body-parser')
+const helmet = require('helmet') // creates headers that protect from attacks
+const cors = require('cors')  // allows/disallows cross-site communication
+
+const express = require('express');
 const path = require('path');
 const app = express();
-const helmet = require('helmet') // creates headers that protect from attacks (security)
-const cors = require('cors')  // allows/disallows cross-site communication
+
+const Item = require("./modules/db").Item;
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 // ** MIDDLEWARE ** //
-const whitelist = ['http://localhost:3000/', 'http://localhost:8000/', 'https://note-keeper-cz.herokuapp.com']
+const whitelist = ['http://localhost:3000/', 'http://localhost:8000', 'https://note-keeper-cz.herokuapp.com']
 const corsOptions = {
   origin: function (origin, callback) {
     console.log("** Origin of request " + origin)
@@ -25,20 +29,20 @@ const corsOptions = {
 app.use(helmet())
 app.use(cors(corsOptions))
 
-app.get('/api/', (req, res) => {
-  res.send({ people: 'You want to see people I assume' });
-});
+// ** APP ** //
 
-app.post('/api/', (req, res) => {
-  res.send( `Person created: ${req.body.person.name}`);
-});
+app.use("/api/user", require("./routes/user"));
 
+app.get("/api/items", (req, res) => {
+
+  Item.find()
+    .sort({ date: -1 })
+    .then(items => res.json(items));
+});
 
 if (process.env.NODE_ENV === 'production') {
 
   app.use(express.static(path.join(__dirname, '../client/build')));
-
-  console.log("dirname: " + __dirname);
 
   app.get('*', function(req, res) {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
