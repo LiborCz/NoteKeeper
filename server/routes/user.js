@@ -16,9 +16,10 @@ router.post("/register", async (req, res) => {
     if (password !== passwordCheck)
       return res.status(400).json({ msg: "Enter the same password twice for verification." });
 
-    if (password.length < 5)
+    if (password.length < 4)
       return res.status(400).json({ msg: "The password needs to be at least 5 characters long." });
 
+    if(!displayName) displayName=email;
 
     const existingUser = await User.findOne({ email: email });
     if (existingUser) return res.status(400).json({ msg: "An account with this email already exists." });
@@ -30,6 +31,7 @@ router.post("/register", async (req, res) => {
       email,
       password: passwordHash,
       displayName,
+      source: 'internal'
     });
     const savedUser = await newUser.save();
     res.json(savedUser);
@@ -43,13 +45,16 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // validate
+    // Missing field values
     if (!email || !password) return res.status(400).json({ msg: "Not all fields have been entered." });
 
-    const user = await User.findOne({ email: email });
-    if (!user)
-      return res.status(400).json({ msg: "No account with this email has been registered." });
+    const user = await User.findOne({ email });
+    console.log(user);
 
+    // User does not exist
+    if (!user) return res.status(400).json({ msg: "No account with this email has been registered." });
+
+    // Wrong password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." });
 
@@ -91,6 +96,10 @@ router.post("/tokenIsValid", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+router.get("/delete", (req, res) => {
+    return res.status(401).json({ error: "Unauthorized" });
 });
 
 router.get("/", auth, async (req, res) => {

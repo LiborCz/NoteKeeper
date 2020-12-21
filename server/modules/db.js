@@ -1,7 +1,6 @@
 //jshint esversion:6
 require("dotenv").config();
 
-const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const timestamps = require("mongoose-timestamp");
 const findOrCreate = require("mongoose-findorcreate");
@@ -24,9 +23,8 @@ mongoose.connect(db, {
 /// USER
 
 const userSchema = new mongoose.Schema({
-  fName: { type: String, required: true, trim: true },
-  lName: { type: String, required: true, trim: true },
-  username: { type: String, required: true, trim: true },
+  displayName: { type: String, required: true, trim: true },
+  email: { type: String, required: true, trim: true },
   source: { type: String, required: true, trim: true },
   provider: String,
   providerId: String,
@@ -37,16 +35,6 @@ const userSchema = new mongoose.Schema({
 userSchema.plugin(timestamps);
 userSchema.plugin(findOrCreate);
 userSchema.plugin(passportLocalMongoose);
-
-// // generating a hash
-// userSchema.methods.generateHash = function(password) {
-//   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-// };
-
-// // checking if password is valid
-// userSchema.methods.validPassword = function(password) {
-//   return bcrypt.compareSync(password, this.local.password);
-// };
 
 module.exports.User = new mongoose.model("User", userSchema);
 
