@@ -25,11 +25,12 @@ mongoose.connect(db, {
 const userSchema = new mongoose.Schema({
   displayName: { type: String, required: true, trim: true },
   email: { type: String, required: true, trim: true },
+  password: { type: String, required: true },
   source: { type: String, required: true, trim: true },
+  isActive: { type: Boolean, default:false },
   provider: String,
   providerId: String,
-  pictureURL: String,
-  isActive: {type:Boolean, default:false }
+  pictureURL: String
 });
 
 userSchema.plugin(timestamps);

@@ -8,7 +8,7 @@ function TestBE() {
   
   var createPerson = (event) => {
     event.preventDefault();
-    axios.post( '/api', { person: { name: "Hey", message: "You" }})
+    axios.post( '/api/user', { person: { name: "Hey", message: "You" }})
     .then( response => { console.log(response) })
     .catch((err) => { 
       console.log("Oops, request failed!");

@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
       email,
       password: passwordHash,
       displayName,
-      source: 'internal'
+      source: 'Keeper'
     });
     const savedUser = await newUser.save();
     res.json(savedUser);
@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
     console.log(user);
 
     // User does not exist
-    if (!user) return res.status(400).json({ msg: "No account with this email has been registered." });
+    if (user===null) return res.status(400).json({ msg: "No account with this email has been registered." });
 
     // Wrong password
     const isMatch = await bcrypt.compare(password, user.password);
