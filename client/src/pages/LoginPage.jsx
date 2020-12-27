@@ -1,75 +1,51 @@
-import React from "react";
-// import history from "../system/history";
+import React, { useContext } from "react";
+import { useHistory } from 'react-router-dom';
+
+import SessionContext from '../context/SessionContext';
+
+import axios from 'axios'
 
 function LoginPage() {
 
-  // const [session, setSession] = React.useContext(AuthContext);
+  const initLogin = { email:"",  password:"", isSubmitting:false, errorMessage:null };
 
-  const initLoginData = {
-    email: "", 
-    password: "",
-    isSubmitting: false,
-    errorMessage: null
-  };
+  const [formData, setFormData] = React.useState(initLogin);
 
-  const [loginData, setLoginData] = React.useState(initLoginData);
+  const {session, setSession} = useContext(SessionContext);  
+
+  const history = useHistory();
 
   const hOnChange = e => {
-      setLoginData({...loginData, [e.target.name]: e.target.value, errorMessage: ""});
+      setFormData({...formData, [e.target.name]: e.target.value, errorMessage: ""});
   };
   
-  const hOnSubmit = e => {
+  const hOnSubmit = async e => {
     e.preventDefault();
 
-    setLoginData({ ...loginData, isSubmitting: true, errorMessage: null });
+    setFormData({ ...formData, isSubmitting: true, errorMessage: null });
 
-    fetch("/api/user/login", {
-      method: "POST",
-      headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: loginData.email,
-        password: loginData.password
-      })
-    })
+    try {
 
-    .then(res => res.json())
+      const res = await axios.post("/api/user/login", { email: formData.email, password: formData.password });
 
-    .then(res => {
+      setFormData({ ...formData, isSubmitting: false });
 
-      alert(res.msg);
+      if (res.data.ok) {
+        setSession({ token:res.data.token, user:res.data.user });
+        localStorage.setItem("auth-token", res.data.token);
+        history.push('/');
+      }
+      else setFormData({ ...formData, errorMessage: res.data.msg });
+    }
 
-      setLoginData({ ...loginData, isSubmitting: false });
-
-      if (res.success) {
-        
-        // let session = {...res.session, act: Date.now()};
-
-        // console.log(session);
-
-        // localStorage.setItem('session', JSON.stringify(session));
-
-        // session = appendSession(session);
-  
-        // setSession(session);
-  
-        // history.push('/home');
-        }
-      else
-        setLoginData({ ...loginData, errorMessage: res.message });
-    })
-
-    .catch(err => {
-      alert(err);
-      setLoginData({
-        ...loginData,
-        isSubmitting: false, 
-        errorMessage: err.statusText === "Unauthorized" ? "Nesprávný email nebo heslo...": err.statusText
-      });
-    });
+    catch (err) { 
+      console.log("error:", err);
+      setFormData({ ...formData, isSubmitting:false, errorMessage: err.msg });
+    }
   };  
 
   return (
-    <div className="section login">
+    <div className="login section">
       <div className="container is-fluid">
         <div className="box">
           <div className="block">
@@ -79,39 +55,22 @@ function LoginPage() {
               <div className="field">
                 <label className="label">Emailová Adresa</label>
                 <div className="control">
-                  <input
-                    className="input"
-                    type="email"
-                    name="email"
-                    onChange={hOnChange}
-                    value={loginData.email}
-                    required
-                  />
+                  <input className="input" type="email" name="email" onChange={hOnChange} value={formData.email} required />
                 </div>
               </div>
 
               <div className="field">
                 <label className="label">Heslo</label>
                 <div className="control">
-                  <input
-                    className="input"
-                    type="password"
-                    name="password"
-                    onChange={hOnChange}
-                    value={loginData.password}
-                  />
+                  <input className="input" type="password" name="password" onChange={hOnChange} value={formData.password} required />
                 </div>
               </div>
 
               <div className="notification has-text-danger has-text-weight-bold is-paddingless has-text-centered">
-                {loginData.errorMessage}
+                {formData.errorMessage}
               </div>
 
-              <button
-                type="submit"
-                className="button is-info is-pulled-right"
-                disabled={loginData.isSubmitting}
-              >
+              <button type="submit" className="button is-info is-pulled-right" disabled={formData.isSubmitting} >
                 Login
               </button>
 
@@ -120,13 +79,10 @@ function LoginPage() {
           </div>
 
           <div className="block">
-            <a href="/register" className="button is-white">
-              Registrace
-            </a>
-            <a href="/pwdlost" className="button is-white">
-              Zapomenuté heslo
-            </a>
+            <a href="/register" className="button is-white">Registrace</a>
+            <a href="/pwdlost" className="button is-white">Zapomenuté heslo</a>
           </div>
+
         </div>
       </div>
     </div>

@@ -11,34 +11,40 @@ router.post("/register", async (req, res) => {
     // validate
 
     if (!email || !password || !passwordCheck)
-      return res.status(400).json({ msg: "Not all fields have been entered." });
+      return res.json({ ok:false, msg: "Not all fields have been entered." });
 
     if (password !== passwordCheck)
-      return res.status(400).json({ msg: "Enter the same password twice for verification." });
+      return res.json({ ok:false, msg: "Enter the same password twice for verification." });
 
     if (password.length < 4)
-      return res.status(400).json({ msg: "The password needs to be at least 5 characters long." });
+      return res.json({ ok:false, msg: "The password needs to be at least 5 characters long." });
 
-    if(!displayName) displayName=email;
+    displayName = displayName || email;
 
-    const existingUser = await User.findOne({ email: email });
-    if (existingUser) return res.status(400).json({ msg: "An account with this email already exists." });
+    let user = await User.findOne({ email });
+    if (user) return res.json({ ok:false, msg: "An account with this email already exists." });
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const newUser = new User({
-      email,
-      password: passwordHash,
-      displayName,
-      source: 'Keeper'
-    });
-    const savedUser = await newUser.save();
-    res.json(savedUser);
+    // Save the new user
+    const newUser = new User({ source: 'Keeper', email, displayName, password: passwordHash });
+    user = await newUser.save();
 
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    // create JWT token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+    // Send the newly created user as a response
+    res.json({ 
+      ok:true, 
+      token,
+      user:{ id: user._id, email: user.email, displayName: user.displayName },
+      msg: "User " + user.displayName + " has been registered and logged in..."
+    });
   }
+  
+  catch (err) { res.status(500).json({ error: err.message }) }
+
 });
 
 router.post("/login", async (req, res) => {
@@ -46,29 +52,26 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     // Missing field values
-    if (!email || !password) return res.status(400).json({ msg: "Not all fields have been entered." });
+    if (!email || !password) return res.json({ ok:false, msg: "Not all fields have been entered." });
 
     const user = await User.findOne({ email });
-    console.log(user);
 
     // User does not exist
-    if (user===null) return res.status(400).json({ msg: "No account with this email has been registered." });
+    if (user===null) return res.json({ ok:false, msg: "No account with this email has been registered." });
 
     // Wrong password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." });
+    if (!isMatch) return res.json({ ok:false, msg: "Invalid credentials." });
 
+    // create JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    res.json({
-      token,
-      user: {
-        id: user._id,
-        displayName: user.displayName,
-      },
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    // Send the newly created user as a response
+    res.json({ ok:true, token, user:{ id: user._id, email: user.email, displayName: user.displayName } });
   }
+  
+  catch (err) { res.status(500).json({ error: err.message }) }
+
 });
 
 router.delete("/delete", auth, async (req, res) => {
@@ -80,7 +83,7 @@ router.delete("/delete", auth, async (req, res) => {
   }
 });
 
-router.post("/tokenIsValid", async (req, res) => {
+router.post("/validateToken", async (req, res) => {
   try {
     const token = req.header("x-auth-token");
     if (!token) return res.json(false);
@@ -91,23 +94,19 @@ router.post("/tokenIsValid", async (req, res) => {
     const user = await User.findById(verified.id);
     if (!user) return res.json(false);
 
-    return res.json(true);
+    return res.json({
+      token, 
+      user: {
+        id: user._id,
+        email: user.email,
+        displayName: user.displayName
+      }});
 
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  } catch (err) { res.json(false); }
 });
 
 router.get("/delete", (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
-});
-
-router.get("/", auth, async (req, res) => {
-  const user = await User.findById(req.user);
-  res.json({
-    displayName: user.displayName,
-    id: user._id,
-  });
 });
 
 module.exports = router;

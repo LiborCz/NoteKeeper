@@ -1,24 +1,27 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import axios from "axios";
+import { useHistory } from 'react-router-dom';
+
+import SessionContext from '../context/SessionContext';
 
 const RegisterPage = () => {
 
-  const initialState = {
-    email: "",
-    password: "",
-    password2: "",
-    errMessage: "",
-    isSubmitting: false
-  };
+  const {session, setSession} = useContext(SessionContext);
 
-  const [formData, setFormData] = React.useState(initialState);
+  const iRegState = { dName:"", email:"", password:"", password2:"", errMessage:"", isSubmitting:false };
 
-  const hOnChange = e => {
+  const [formData, setFormData] = useState(iRegState);
+  const history = useHistory();  
+
+  const onChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value, errMessage: "" });
   };
 
-  const hOnSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
 
+    // Password2 = passwordCheck has been tested here, but is also checked in BE
+    // Can be modified later
     if(formData.password!==formData.password2) {
       setFormData({ ...formData, errMessage: "Hesla se neshodují !" });
       return;
@@ -26,55 +29,51 @@ const RegisterPage = () => {
 
     setFormData({ ...formData, isSubmitting: true, errMessage: null });
 
-    fetch("/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: formData.email, password: formData.password })
-    })
+    try {
+      const res = await axios.post("/api/user/register", {
+        email: formData.email, 
+        displayName: formData.dName, 
+        password: formData.password,
+        passwordCheck: formData.password2
+      })
 
-    .then(res => {
-      if (res.ok) { setFormData({ ...formData, isSubmitting:false }); return res.json(); }
-      else throw res;
-    })
+      setFormData({ ...formData, isSubmitting:false });
 
-    .then(res => {
+      if(res.data.ok) {
+        setSession({ token:res.data.token, user:res.data.user });
+        localStorage.setItem("auth-token", res.data.token);
+        alert(res.data.msg);
+        history.push("/");
+      }
+      else setFormData({ ...formData, errMessage: res.data.msg });
+    }
 
-      console.log(res);
-
-      if(res.success)
-        //Tady se udela napr modal popup...
-        setFormData({ ...formData, errMessage: res.message });
-      else
-        setFormData({ ...formData, errMessage: res.message });
-    })
-
-    .catch(err => {
+    catch(err) { 
       setFormData({ ...formData, isSubmitting: false, errMessage: err.statusText });
-    });
+    }
 
   };
 
   return (
-    <div className="section">
+    <div className="register section">
       <div className="container is-fluid">
-        <div className="box" style={{ width: "30rem", height:"24rem" }}>
-          <form onSubmit={hOnSubmit}>
+        <div className="box">
+          <form onSubmit={onSubmit}>
 
+            {/* Display Name */}
+            <div className="field">
+              <label className="label">Oslovení / Přezdívka</label>
+              <div className="control">
+                <input className="input" type="text" name="dName" onChange={onChange} value={formData.dName} />
+              </div>
+            </div>
+            
             {/* Email */}
             <div className="field">
               <label className="label">Emailová adresa</label>
               <div className="control has-icons-left">
-                <input
-                  className="input"
-                  type="email"
-                  name="email"
-                  onChange={hOnChange}
-                  value={formData.email}
-                  required
-                />
-                <span className="icon is-small is-left">
-                  <i className="fa fa-envelope"></i>
-                </span>
+                <input className="input" type="email" name="email" onChange={onChange} value={formData.email} required />
+                <span className="icon is-small is-left"><i className="fa fa-envelope"></i></span>
               </div>
             </div>
 
@@ -82,17 +81,8 @@ const RegisterPage = () => {
             <div className="field">
               <label className="label">Heslo</label>
               <div className="control has-icons-left">
-                <input
-                  className="input"
-                  type="password"
-                  name="password"
-                  onChange={hOnChange}
-                  value={formData.password}
-                  required
-                />
-                <span className="icon is-small is-left">
-                  <i className="fa fa-lock"></i>
-                </span>
+                <input className="input" type="password" name="password" onChange={onChange} value={formData.password} required />
+                <span className="icon is-small is-left"><i className="fa fa-lock"></i></span>
               </div>
             </div>
 
@@ -100,30 +90,16 @@ const RegisterPage = () => {
             <div className="field">
               <label className="label">Potvrzení hesla</label>
               <div className="control has-icons-left">
-                <input
-                  id="passwordConf"
-                  className="input"
-                  type="password"
-                  name="password2"
-                  onChange={hOnChange}
-                  value={formData.password2}
-                  required
-                />
-                <span className="icon is-small is-left">
-                  <i className="fa fa-lock"></i>
-                </span>
+                <input id="passwordConf" className="input" type="password" name="password2" onChange={onChange} value={formData.password2} required />
+                <span className="icon is-small is-left"><i className="fa fa-lock"></i></span>
               </div>
             </div>
 
-            <div className="notification has-text-danger has-text-weight-bold is-paddingless center">
+            <div className="error has-text-danger has-text-weight-bold is-paddingless">
               {formData.errMessage}
             </div>
 
-            <button
-              type="submit"
-              className="button is-info is-pulled-right"
-              disabled={formData.isSubmitting}
-            >
+            <button type="submit" className="button is-info is-pulled-right" disabled={formData.isSubmitting} >
               Registrovat
             </button>
           </form>

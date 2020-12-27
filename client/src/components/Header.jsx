@@ -1,6 +1,8 @@
-import React from "react";
-import {Link, useHistory} from 'react-router-dom';
+import React, { useContext } from "react";
+import { useHistory } from 'react-router-dom';
 import $ from 'jquery';
+
+import SessionContext from "../context/SessionContext";
 
 function Header() {
 
@@ -14,14 +16,17 @@ function Header() {
         $(".navbar-menu").toggleClass("is-active");
   
     });
-  });  
-  
+  });
+
+  const {session, setSession} = useContext(SessionContext);
+
   const history = useHistory();
 
   const home = () => history.push("/");
 
-  const logout = () => {
-    alert("Logout");
+  const logout = () => { 
+    setSession({ token: undefined, user: undefined });
+    localStorage.setItem("auth-token", "" );
   }
 
   return (
@@ -33,40 +38,38 @@ function Header() {
           <b className="logo is-size-4 has-text-light" onClick={home}>Keeper</b>
         </div>
 
-        <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false">
+        <div role="button" className="navbar-burger" aria-label="menu" aria-expanded="false">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
-        </a>        
+        </div>        
       </div>
       
       <div className="navbar-menu">
 
         <div className="navbar-item navbar-end has-dropdown is-hoverable">
           
-          {/* <span className="navbar-link"> {session.email} </span> */}
-        
-          <div className="navbar-item">
-            <div className="buttons">
-              <a className="button is-info" href="/register"><strong>Register</strong></a>
-              <a className="button is-light" href="/login">Log in</a>
+          { !session.user ? (
+            <div className="navbar-item">
+              <div className="buttons">
+                <a className="button is-info" href="/register"><strong>Register</strong></a>
+                <a className="button is-light" href="/login">Log in</a>
+              </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <span className="navbar-link"> {session.user.displayName} </span>
 
-          <div className="navbar-dropdown is-right">
-            <a className="navbar-item" href="/login">Login</a>
-            <a className="navbar-item" href="/register">Register</a>
-            <a className="navbar-item" href="/pwdchange">Změna hesla</a>
-
-            <hr className="navbar-divider" />
-
-            <a className="navbar-item" href="/" onClick={logout}>Logout</a>
-          </div>
+              <div className="navbar-dropdown is-right">
+                <a className="navbar-item" href="/pwdchange">Změna hesla</a>
+                <hr className="navbar-divider" />
+                <a className="navbar-item" href="/" onClick={logout}>Logout</a>
+              </div>
+            </>
+          )}
 
         </div>
       </div>
-
-      {/* { session.isAuth && <MenuUser sessionLogout={sessionLogout} /> } */}
 
     </nav>
   );
