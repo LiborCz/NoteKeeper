@@ -69,9 +69,9 @@ function LoginPage() {
   };  
 
   return (
-    <div className="section">
+    <div className="section login">
       <div className="container is-fluid">
-        <div className="box" style={{ width: "30rem" }}>
+        <div className="box">
           <div className="block">
 
             <form onSubmit={hOnSubmit}>

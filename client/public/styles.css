@@ -14,6 +14,11 @@ body {
 }
 
 /* Login / Register Page */
+
+.login .box {
+  max-width: 25rem;
+}
+
 .is-error-center {
   justify-content: center;
   align-items: center;
