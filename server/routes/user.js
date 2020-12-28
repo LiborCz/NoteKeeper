@@ -109,4 +109,17 @@ router.get("/delete", (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
 });
 
+router.get("/test", (req, res) => {
+  return res.json({ ok: true, msg: "Tested - all ok!!" });
+});
+
+router.post("/test", (req, res) => {
+
+  const note = req.body.note;
+
+  console.log(note);
+
+  return res.json({ ok: true, msg: "Tested - all ok: " + note.name + " - " + note.msg});
+});
+
 module.exports = router;
