@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
 const auth = require("../middleware/auth");
 const User = require("../modules/db").User;
 
@@ -8,7 +9,7 @@ router.post("/register", async (req, res) => {
   try {
     let { email, password, passwordCheck, displayName } = req.body;
 
-    // validate
+    // Validate
 
     if (!email || !password || !passwordCheck)
       return res.json({ ok:false, msg: "Not all fields have been entered." });
@@ -63,6 +64,8 @@ router.post("/login", async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.json({ ok:false, msg: "Invalid credentials." });
 
+    // All OK ->  Continue to Log in...
+
     // create JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
@@ -72,15 +75,6 @@ router.post("/login", async (req, res) => {
   
   catch (err) { res.status(500).json({ error: err.message }) }
 
-});
-
-router.delete("/delete", auth, async (req, res) => {
-  try {
-    const deletedUser = await User.findByIdAndDelete(req.user);
-    res.json(deletedUser);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 router.post("/validateToken", async (req, res) => {
@@ -105,21 +99,34 @@ router.post("/validateToken", async (req, res) => {
   } catch (err) { res.json(false); }
 });
 
+
+// DELETE
+
+router.delete("/delete", auth, async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.user);
+    res.json(deletedUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get("/delete", (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
 });
 
+
+// TEST
+
 router.get("/test", (req, res) => {
-  return res.json({ ok: true, msg: "Tested - all ok!!" });
+  return res.json({ ok: true, msg: "Tested ok !!" });
 });
 
 router.post("/test", (req, res) => {
 
-  const note = req.body.note;
+  console.log(req.body.msg);
 
-  console.log(note);
-
-  return res.json({ ok: true, msg: "Tested - all ok: " + note.name + " - " + note.msg});
+  return res.json({ ok: true, msg: "Tested ok: " + req.body.msg });
 });
 
 module.exports = router;

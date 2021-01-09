@@ -6,7 +6,7 @@ import SessionContext from '../context/SessionContext';
 
 const RegisterPage = () => {
 
-  const {session, setSession} = useContext(SessionContext);
+  const {setSession} = useContext(SessionContext);
 
   const iRegState = { dName:"", email:"", password:"", password2:"", errMessage:"", isSubmitting:false };
 
@@ -30,7 +30,7 @@ const RegisterPage = () => {
     setFormData({ ...formData, isSubmitting: true, errMessage: null });
 
     try {
-      const res = await axios.post("/api/user/register", {
+      const res = await axios.post("/api/users/register", {
         email: formData.email, 
         displayName: formData.dName, 
         password: formData.password,

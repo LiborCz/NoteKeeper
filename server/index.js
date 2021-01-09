@@ -6,8 +6,6 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-const Item = require("./modules/db").Item;
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 
@@ -31,14 +29,9 @@ app.use(cors(corsOptions))
 
 // ** APP ** //
 
-app.use("/api/user", require("./routes/user"));
+app.use("/api/users", require("./routes/users"));
+app.use("/api/items", require("./routes/items"));
 
-app.get("/api/items", (req, res) => {
-
-  Item.find()
-    .sort({ date: -1 })
-    .then(items => res.json(items));
-});
 
 if (process.env.NODE_ENV === 'production') {
 

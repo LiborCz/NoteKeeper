@@ -5,6 +5,8 @@ import axios from 'axios';
 import SessionContext from "../context/SessionContext";
 
 import Header from "../components/Header";
+import Footer from "../components/Footer";
+
 import MainPage from "../pages/MainPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
@@ -18,7 +20,7 @@ function App() {
       let token = localStorage.getItem("auth-token");
       
       try {
-        const res = await axios.post("/api/user/validateToken", null, { headers:{"x-auth-token":token} });
+        const res = await axios.post("/api/users/validateToken", null, { headers:{"x-auth-token":token} });
 
         if (res.data.token && res.data.user) { 
           setSession({ token:res.data.token, user:res.data.user });
@@ -43,6 +45,8 @@ function App() {
           <Route path="/login" component={LoginPage} />
           <Route path="/register" component={RegisterPage} />
         </Switch>
+        <Footer />
+
 
       </SessionContext.Provider>
     </BrowserRouter>

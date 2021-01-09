@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, trim: true },
   password: { type: String, required: true },
   source: { type: String, required: true, trim: true },
-  isActive: { type: Boolean, default:false },
+  isActive: { type: Boolean, default: false },
   provider: String,
   providerId: String,
   pictureURL: String
@@ -60,8 +60,8 @@ module.exports.UserSession = new mongoose.model("UserSession", userSessionSchema
 
 const itemSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  content: { type: String },
-  user_id: String
+  text: { type: String },
+  c_user: String
 });
 
 itemSchema.plugin(timestamps);

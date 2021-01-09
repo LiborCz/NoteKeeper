@@ -11,7 +11,7 @@ function LoginPage() {
 
   const [formData, setFormData] = React.useState(initLogin);
 
-  const {session, setSession} = useContext(SessionContext);  
+  const {setSession} = useContext(SessionContext);  
 
   const history = useHistory();
 
@@ -26,7 +26,7 @@ function LoginPage() {
 
     try {
 
-      const res = await axios.post("/api/user/login", { email: formData.email, password: formData.password });
+      const res = await axios.post("/api/users/login", { email: formData.email, password: formData.password });
 
       setFormData({ ...formData, isSubmitting: false });
 
