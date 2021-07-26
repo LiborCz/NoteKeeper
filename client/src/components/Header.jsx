@@ -18,7 +18,7 @@ function Header() {
     });
   });
 
-  const {session, setSession} = useContext(SessionContext);
+  const {session, setSession, setMapShowState, setShowDlgItemNew} = useContext(SessionContext);
 
   const history = useHistory();
 
@@ -29,6 +29,10 @@ function Header() {
     localStorage.setItem("auth-token", "" );
   }
 
+  const toggleMapShow = () => { setMapShowState(curState => (curState==="none") ? "block" : "none"); }
+
+  const openNewNoteDlg = () => setShowDlgItemNew(true);
+
   return (
     <nav className="navbar is-fixed-top is-info" role="navigation" aria-label="dropdown navigation">
 
@@ -37,6 +41,9 @@ function Header() {
         <div className="navbar-item">
           <b className="logo is-size-4 has-text-light" onClick={home}>Keeper</b>
         </div>
+
+        <button className="header space-left" onClick={toggleMapShow}>Overview Map</button>
+        <button className="header note-new space-left" onClick={openNewNoteDlg}>Insert New Note</button>
 
         <div role="button" className="navbar-burger" aria-label="menu" aria-expanded="false">
           <span aria-hidden="true"></span>

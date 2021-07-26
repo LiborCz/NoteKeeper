@@ -3,23 +3,16 @@ import axios from 'axios';
 
 import SessionContext from '../context/SessionContext'
 
-function NoteNew({setNotes}) {
+function NoteNew({setItems}) {
 
   const { session } = useContext(SessionContext);
 
   const [form, setForm] = useState({ title: "", note: "" });
 
-  function onChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const onSubmit = async(e) => {
-
-    // setForm({ ...form, isSubmitting: true, errorMessage: null });
-    e.preventDefault();
-
+  const onSubmit = async(e) => { e.preventDefault();
     try {
-
       const res = await axios.post("/api/items/add", {
         title: form.title,
         text: form.note
@@ -27,18 +20,11 @@ function NoteNew({setNotes}) {
 
       if (res.data.ok) {
         const newItem = res.data.item;
-        setNotes(curNotes => ([...curNotes, {title: newItem.title, text: newItem.text}]));
+        setItems(curNotes => ([...curNotes, {title: newItem.title, text: newItem.text}]));
       }
-      // else setFormData({ ...formData, errorMessage: res.data.msg });      
-
-      // setFormData({ ...formData, isSubmitting: false });
-
     }
 
-    catch (err) { 
-      console.log("error:", err);
-      // setFormData({ ...formData, isSubmitting:false, errorMessage: err.msg });
-    }
+    catch (err) { console.log("error:", err); }
 
     setForm({ title: "", note: "" });
   }

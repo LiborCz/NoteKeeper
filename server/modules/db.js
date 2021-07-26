@@ -61,6 +61,7 @@ module.exports.UserSession = new mongoose.model("UserSession", userSessionSchema
 const itemSchema = new mongoose.Schema({
   title: { type: String, required: true },
   text: { type: String },
+  location: { type: {type:String}, coords: [Number] },  //"Point", ["Lng", "Lat"]
   c_user: String
 });
 

@@ -1,28 +1,26 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from 'react-router-dom';
 import axios from "axios";
 
 import SessionContext from "../context/SessionContext";
 
-import Note from "../components/Note";
+import Item from "../components/Item";
 import NoteNew from "../components/NoteNew";
+import DlgItemNew from "../components/DlgItemNew";
+import MapSetOverlay from "../components/map/MapSetOverlay";
+import MapShowOverlay from "../components/map/MapShowOverlay";
 
 function App() {
-  const [notes, setNotes] = useState([]);
-  const history = useHistory();
-  const { session } = useContext(SessionContext);
+  const { session, items, setItems, itemDelete } = useContext(SessionContext);
 
   useEffect(() => {
     try {
       if(session.user) {
-        console.log("user:", session.user.displayName);
-  
         async function fetchData() {
           const res = await axios.get("/api/items/list/" + session.user.id, 
             { headers: {"x-auth-token":session.token }});
 
           console.log("res", res.data)  
-          setNotes(res.data);
+          setItems(res.data);
         }
         fetchData();
       }
@@ -34,23 +32,15 @@ function App() {
     
   }, [session.user, session.token]);
 
-  function onDelete(id) {
-    setNotes(prevNotes => {
-      return prevNotes.filter((noteItem, index) => {
-        return index !== id;
-      });
-    });
-  }
+  const onDelete = (id) => itemDelete(id);
 
   return (<>
-    <NoteNew setNotes={setNotes} />
-    {notes.map((note, index) => {
-      return (
-        <Note key={index} id={index} title={note.title} text={note.text}
-          onDelete={onDelete}
-        />
-      );
-    })}
+    <MapSetOverlay />
+    <MapShowOverlay />
+    <DlgItemNew setItems={setItems} />
+    {items.map((item, index) => 
+      <Item key={index} id={item._id} title={item.title} text={item.text} onDelete={onDelete} />
+    )}
   </>);
 }
 

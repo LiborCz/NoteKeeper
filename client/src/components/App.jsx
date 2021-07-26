@@ -15,6 +15,53 @@ function App() {
 
   const [session, setSession] = useState({ token: undefined, user: undefined });
 
+  const [showDlgItemNew, setShowDlgItemNew] = useState(false);
+  const [mapShowState, setMapShowState] = useState("none");
+  const [mapSetState, setMapSetState] = useState("none");
+  const [mapSetCoords, setMapSetCoords] = useState([]);
+
+  const [items, setItems] = useState([]);
+
+  const itemAdd = async (form) => {
+    try {
+      const res = await axios.post("/api/items/add", {
+        title: form.title,
+        text: form.text,
+        location: { type: "Point", coords: mapSetCoords }
+      }, { headers: {"x-auth-token": session.token }});
+
+      if (res.data.ok) {
+        const newItem = res.data.item;
+        setItems(curItems => ([...curItems, {
+          title: newItem.title, 
+          text: newItem.text,
+          location: { type: "Point", coords: mapSetCoords }
+        }]));
+        setMapSetCoords([]);
+        return true;
+        }
+      else return false;
+      }
+
+    catch (err) { console.log("error:", err); return false; }
+  }
+
+  const itemDelete = async (id) => {
+    try {
+      if(session.user) {
+        const res = await axios.delete("/api/items/delete/" + id, 
+          { headers: {"x-auth-token":session.token }});
+
+        console.log("deleted: ", res.data)
+        setItems(prevItems => prevItems.filter((item, index) => item._id !== id ));
+      }
+      else {
+      // history.push("/login");
+      }
+    }
+    catch (err) { console.log("error:", err); }
+  }
+
   useEffect(() => {
     const checkLoggedIn = async () => {
       let token = localStorage.getItem("auth-token");
@@ -24,7 +71,6 @@ function App() {
 
         if (res.data.token && res.data.user) { 
           setSession({ token:res.data.token, user:res.data.user });
-          console.log("User is checked as Logged-in !! ");
         }
       }
 
@@ -34,10 +80,16 @@ function App() {
     checkLoggedIn();
   }, []);
 
-
   return (
     <BrowserRouter>
-      <SessionContext.Provider value={{ session, setSession }}>
+      <SessionContext.Provider value={{ 
+        session, setSession, 
+        mapSetState, setMapSetState, 
+        mapSetCoords, setMapSetCoords, 
+        mapShowState, setMapShowState,
+        showDlgItemNew, setShowDlgItemNew,
+        items, setItems, itemAdd, itemDelete
+        }}>
 
         <Header />
         <Switch>

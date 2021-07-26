@@ -1,71 +1,40 @@
-:root {
-  --primary-red: #f64f59;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Montserrat", sans-serif;
 }
 
 body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #eee;
+  overflow: hidden;
+  padding: 0 16px;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #444444;
-  background-color: #f7f7f7;
-}
-
-pre {
-  white-space: pre-wrap;
-  /* Since CSS 2.1 */
-  white-space: -moz-pre-wrap;
-  /* Mozilla, since 1999 */
-  white-space: -pre-wrap;
-  /* Opera 4-6 */
-  white-space: -o-pre-wrap;
-  /* Opera 7 */
-  word-wrap: break-word;
-  /* Internet Explorer 5.5+ */
-}
-
-.navbar {
-  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.65);
-  z-index: 1000;
 }
 
 
-.navbar-items {
-  background-color: deepskyblue;
-  /* color: white; */
-
-  /* line-height: 1; */
-  /* height: 40px; */
-
-  position: fixed;
-  top: 50;
-  right: 0;
-  left: 0;
-
-  xdisplay: flex;
-  z-index: 1;
-
-  xflex-wrap: nowrap;
-  xalign-items: center;
-  xvertical-align: top;
-  xjustify-content: start;
-
-  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.65);  
+.inline-error {
+  color: red;
+  font-size: 1rem;
+  font-weight: 800;
+  align-self: center;
 }
 
-.panel-content {
-  transition: height 1s ease;
-  background: rgba(31, 190, 214, 0.9);
+/* Login / Register Page */
+
+.login .box, .register .box {
+  max-width: 25rem;
 }
 
-/* In combination with Bulma */
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.login .error, .register .error {
+  text-align: center;
+  margin-bottom: 20px;  
 }
+
 
 .is-error-center {
   justify-content: center;
@@ -75,170 +44,144 @@ pre {
   display: flex;
 }
 
-/* BULMA Field group helper */
-
-/* Target tablet and up */
-@media screen and (min-width: 769px), print {
-  .field-group {
-    display: flex;
-  }
-
-  /* Give margin on left if not first field */
-  .field-group > .field:not(:first-child) {
-    margin-left: 0.75rem;
-  }
-
-  /* Give margin on right if not last field */
-  .field-group > .field:not(:last-child) {
-    margin-right: 0.75rem;
-  }
-
-  /* Allow fields to grow to fill up all horizontal space */
-  .field-group > .field {
-    flex: 1 1 0;
-  }
-
-  /* Remove bottom margin if grouped fields are the last in the form */
-  .field-group:last-child > .field {
-    margin-bottom: 0;
-  }
+.example {
+  position: absolute;
+  z-index: 1000;
 }
 
-/* If grouped fields aren't the last in the form, give them bottom margin */
-.field-group:not(:last-child) > .field {
-  margin-bottom: 0.75rem;
+.example input {
+  border-color: red;
 }
 
-.logo {
-  color: #fff;
-  font-family: "McLaren", cursive;
-  font-weight: 700;
-}
-
-
-.card {
-  border-radius: 5px;
-}
-
-.card * {
-  word-wrap: break-word;
-}
-
-.card-header {
-  padding: 3px 5px;
-  font-weight: bold;
-}
-
-.margin-vertical {
-  margin: 25px 0px;
-}
-
-.is-fixed-bottom {
-  position: fixed;
-  bottom: 0px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0 auto;
-}
-
-.column {
+/* General Dialog Properties */
+[data-reach-dialog-overlay] {
+  display: flex;
+  align-content: center;
   justify-content: center;
 }
 
-/* Forms */
-
-.is-loginbox {
-  width: 30rem;
+[data-reach-dialog-content] {
+  margin: auto !important;
+  border-radius: 7px;
+  padding-top: 3rem !important;
+  padding-bottom: 1rem;
+  box-shadow: 0 1px 5px rgb(138, 137, 137);
 }
 
 
-.menu-btn {
-  padding: 12px 15px;
-  display: inline-block;
+/* Note */
+.note {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 2px 5px #ccc;
+  padding: 10px;
+  width: 240px;
+  margin: 16px;
+  float: left;
+}
+.note h1 {
+  font-size: 1.1em;
+  margin-bottom: 6px;
+}
+.note p {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
-.menu-btn:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+.note button {
+  position: relative;
+  float: right;
+  margin-right: 10px;
+  color: #f5ba13;
+  border: none;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Dialog Item New */
+.dlg-item-new {
+  width: 800px !important;
+}
+
+.dlg-item-new .btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Note new */
+xform.create-note {
+  position: relative;
+  width: 480px;
+  margin: 30px auto 20px auto;
+  background: #fff;
+  padding: 15px;
+  border-radius: 7px;
+  box-shadow: 0 1px 5px rgb(138, 137, 137);
+}
+xform.create-note input,
+xform.create-note textarea {
+  width: 100%;
+  border: none;
+  padding: 4px;
+  outline: none;
+  font-size: 1.2em;
+  font-family: inherit;
+  resize: none;
+}
+xform.create-note button {
+  position: absolute;
+  right: 18px;
+  bottom: -18px;
+  background: #f5ba13;
+  color: #fff;
+  border: none;
   border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
 }
 
-.menu-bar {
-  overflow: hidden;
-  background-color: var(--primary-red);
-  box-shadow: -5px -7px 15px 1px rgba(0, 0, 0, 0.8);
-  padding-left: 20%;
-  padding-right: 20%;
+x.overlay {
+  position: fixed; /* Sit on top of the page content */
+  width: 100vw; /* Full width (cover the whole page) */
+  height: 100vh; /* Full height (cover the whole page) */
+  top: 0; left: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 1; /* Specify a stack order in case you're using a different order for other elements */
 }
 
-.disabled {
-  pointer-events: none;
+/* Header */
+.navbar {
+  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;  
 }
 
-.app-icon-container {
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  font-size: 1.5rem;
-  border-radius: 50%;
+.navbar .logo {
+    font-family: "McLaren", cursive;
+    font-weight: 700;
+    cursor: pointer;
+    color: #fff;
 }
 
-.page {
-  width: 80%;
-  margin: 0 auto;
+
+/* Footer */
+footer {
+  position: absolute;
+  text-align: center;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;
 }
 
-.page-title {
-  font-weight: 400;
-  font-size: 35px;
-}
-
-.window {
-  width: 80%;
-  margin: 0 auto;
-  background: white;
-  border-radius: 6px;
-}
-
-.title-bar {
-  background-color: white;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
-  color: #4d494d;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
-.content {
-  background-color: #EEEEEE;
-  padding: 20px 10px;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-}
-
-@media (max-width: 860px) {
-  .page {
-    width: 65%;
-  }
-
-  .menu-bar {
-    padding-left: 5%;
-    padding-right: 5%;
-  }
-}
-
-@media (max-width: 770px) {
-  .page {
-    width: 80%;
-  }
-}
-
-@media (max-width: 660px) {
-  .page {
-    width: 98%;
-  }
-
-  .menu-bar {
-    padding-left: 0;
-    padding-right: 0;
-  }
+footer p {
+  color: #ccc;
 }

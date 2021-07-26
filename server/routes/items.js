@@ -6,11 +6,9 @@ const Item = require("../modules/db").Item;
 router.post("/add", auth, async (req, res) => {
   try {
 
-    console.log(req.body);
+    // console.log(req.body);
 
-    const { title, text } = req.body;
-
-    console.log("title", title);
+    const { title, text, location } = req.body;
 
     // Validation
     if (!title) return res.json({ ok:false, msg: "Not all fields have been entered." });
@@ -19,6 +17,7 @@ router.post("/add", auth, async (req, res) => {
     const newItem = new Item({
       title,
       text,
+      location,
       c_user: req.user
     });
 
@@ -51,6 +50,8 @@ router.get("/list/:user", auth, (req, res) => {
 // Delete
 
 router.delete("/delete/:id", auth, async (req, res) => {
+
+  console.log("Deleting id:" + req.params.id);
 
   try {
     const delItem = await Item.findByIdAndDelete(req.params.id);

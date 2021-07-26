@@ -119,7 +119,7 @@ router.get("/delete", (req, res) => {
 // TEST
 
 router.get("/test", (req, res) => {
-  return res.json({ ok: true, msg: "Tested ok !!" });
+  return res.json({ ok: true, msg: "Tested ok - super!!" });
 });
 
 router.post("/test", (req, res) => {
