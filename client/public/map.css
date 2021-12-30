@@ -51,7 +51,7 @@
 
 .map-title {
   position: absolute;
-  color: red;
+  color: greenyellow;
   z-index: 12;
   font-size: 2rem;
   font-weight:600;
