@@ -1,6 +1,8 @@
 const bodyParser = require('body-parser')
 const helmet = require('helmet') // creates headers that protect from attacks
 const cors = require('cors')  // allows/disallows cross-site communication
+require('dotenv').config()
+
 
 const express = require('express');
 const path = require('path');
@@ -31,7 +33,6 @@ app.use(cors(corsOptions))
 
 app.use("/api/users", require("./routes/users"));
 app.use("/api/items", require("./routes/items"));
-
 
 if (process.env.NODE_ENV === 'production') {
 

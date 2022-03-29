@@ -29,9 +29,15 @@ function Header() {
     localStorage.setItem("auth-token", "" );
   }
 
-  const toggleMapShow = () => { setMapShowState(curState => (curState==="none") ? "block" : "none"); }
+  const toggleMapShow = () => {
+    setMapShowState(curState => (curState==="none") ? "block" : "none");
+  }
 
-  const openNewNoteDlg = () => setShowDlgItemNew(true);
+  const openNewNoteDlg = () => {
+    setMapShowState(
+      "none");
+    setShowDlgItemNew(true);
+  }
 
   return (
     <nav className="navbar is-fixed-top is-info" role="navigation" aria-label="dropdown navigation">

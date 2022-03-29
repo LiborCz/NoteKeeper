@@ -45,7 +45,10 @@ const RegisterPage = () => {
         alert(res.data.msg);
         history.push("/");
       }
-      else setFormData({ ...formData, errMessage: res.data.msg });
+      else {
+        setFormData({ ...formData, errMessage: res.data.msg });
+        // console.log(res.data)
+      }
     }
 
     catch(err) { 

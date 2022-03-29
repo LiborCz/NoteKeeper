@@ -1,5 +1,4 @@
 //jshint esversion:6
-require("dotenv").config();
 
 const mongoose = require("mongoose");
 const timestamps = require("mongoose-timestamp");
@@ -8,7 +7,8 @@ const passportLocalMongoose = require("passport-local-mongoose");
 
 /// DB init
 
-const db = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PWD}@cluster0-depo4.mongodb.net/LostAndFound`;
+// const db = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PWD}@cluster0-depo4.mongodb.net/LostAndFound`;
+const db = `mongodb+srv://admin-libor:Telephone7Mb@cluster0.depo4.mongodb.net/LostAndFound?retryWrites=true&w=majority`;
 
 mongoose.connect(db, {
     useNewUrlParser: true,
